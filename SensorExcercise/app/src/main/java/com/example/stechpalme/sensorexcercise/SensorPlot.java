@@ -1,17 +1,26 @@
 package com.example.stechpalme.sensorexcercise;
 
 import android.app.Activity;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
-public class SensorPlot extends Activity {
+public class SensorPlot extends Activity implements SensorEventListener {
+    SensorManager sManager;
+    PlotView myPlotView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_sensor_plot);
-        setContentView(new PlotView(this));
+        setContentView(R.layout.activity_sensor_plot);
+        myPlotView = (PlotView) findViewById(R.id.plot1);
+        sManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        sManager.registerListener(this,sManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),SensorManager.SENSOR_DELAY_NORMAL);
     }
 
 
@@ -35,5 +44,20 @@ public class SensorPlot extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+    @Override
+    public void onAccuracyChanged(Sensor arg0, int arg1) {
+
+    }
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if(event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            SensorData data = new SensorData(event.values[0],event.values[1],event.values[2]);
+            this.myPlotView.addData(data);
+            myPlotView.invalidate();
+            //System.out.println("x" + event.values[0]);
+            //System.out.println("y" + event.values[1]);
+            //System.out.println("z" + event.values[2]);
+        }
     }
 }

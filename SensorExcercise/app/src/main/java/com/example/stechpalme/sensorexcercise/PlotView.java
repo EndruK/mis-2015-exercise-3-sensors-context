@@ -4,21 +4,77 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.hardware.SensorEvent;
+import android.util.AttributeSet;
 import android.view.View;
+
+import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * Created by andre on 21.05.2015.
  */
 public class PlotView extends View {
-    public PlotView(Context context) {
-        super(context);
+    float width;
+    float height;
+    float padding = 50.0f;
+    float originX = padding;
+    float originY;
+    float xAxisEnd;
+    float yAxisEnd = padding;
+    ArrayList<SensorData> sensorDatas;
+
+    public PlotView(Context context, AttributeSet attr) {
+        super(context,attr);
+        sensorDatas = new ArrayList<>();
     }
     @Override
     protected void onDraw(Canvas canvas) {
+        this.width = canvas.getWidth();
+        this.height = canvas.getHeight();
+        this.originY = this.height - this.padding;
+        this.xAxisEnd = this.width - this.padding;
         super.onDraw(canvas);
-        Paint paint=new Paint();
+        Paint paint = new Paint();
         paint.setColor(Color.BLACK);
-        paint.setStrokeWidth(3f);
-        canvas.drawLine(150,150,550,150,paint);
+        paint.setStrokeWidth(3.0f);
+        canvas.drawLine(this.originX,this.originY, this.originX,this.yAxisEnd, paint);
+        canvas.drawLine(this.originX,this.originY, this.xAxisEnd,this.originY, paint);
+        if(sensorDatas.size() > 50) {
+            for (int i = 1; i < 51; ++i) {
+                SensorData d1 = this.sensorDatas.get(this.sensorDatas.size() - i);
+                SensorData d2 = this.sensorDatas.get(this.sensorDatas.size() - 1 - i);
+                drawSensorLine(i,d1.getX(),d2.getX(),canvas,Color.RED);
+            }
+        }
+        else if(this.sensorDatas.size() < 50 && this.sensorDatas.size() > 2) {
+            for(int i = 1; i < this.sensorDatas.size(); ++i) {
+                SensorData d1 = this.sensorDatas.get(this.sensorDatas.size() - i);
+                SensorData d2 = this.sensorDatas.get(this.sensorDatas.size() - 1 - i);
+
+                float x1 = d1.getX();
+                float x2 = d2.getX();
+            }
+        }
+    }
+
+    private void drawSensorLine(int i, float val1, float val2, Canvas canvas, int color) {
+        /*
+        | ----------------------------- |
+        | 0 ........................ 50
+         */
+        float posX1 = this.padding + (i * ((this.xAxisEnd - this.padding) / 50));
+        float posX2 = this.padding + (i + 1 * ((this.xAxisEnd - this.padding)/50));
+
+        float posY1 = this.originY - (this.originY-this.padding)/val1;
+        float posY2 = this.originY - (this.originY-this.padding)/val2;
+
+        Paint p = new Paint();
+        p.setColor(color);
+        canvas.drawLine(posX1,posY1,posX2,posY2,p);
+    }
+
+    public void addData(SensorData data) {
+        sensorDatas.add(data);
     }
 }

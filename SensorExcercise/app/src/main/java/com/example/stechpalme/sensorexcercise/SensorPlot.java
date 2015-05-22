@@ -14,6 +14,7 @@ import android.widget.SeekBar;
 public class SensorPlot extends Activity implements SensorEventListener, SeekBar.OnSeekBarChangeListener {
     SensorManager sManager;
     PlotView myPlotView;
+    FFTView myFFTView;
     SeekBar mySeekBar;
 
     @Override
@@ -22,6 +23,8 @@ public class SensorPlot extends Activity implements SensorEventListener, SeekBar
         setContentView(R.layout.activity_sensor_plot);
         myPlotView = (PlotView) findViewById(R.id.plot1);
         myPlotView.setBackgroundColor(Color.BLACK);
+        myFFTView = (FFTView) findViewById(R.id.plot2);
+        myFFTView.setBackgroundColor(Color.BLACK);
         mySeekBar = (SeekBar) findViewById(R.id.seekBar);
         mySeekBar.setOnSeekBarChangeListener(this);
         sManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -60,6 +63,8 @@ public class SensorPlot extends Activity implements SensorEventListener, SeekBar
             SensorData data = new SensorData(event.values[0],event.values[1],event.values[2]);
             this.myPlotView.addData(data);
             myPlotView.invalidate();
+            this.myFFTView.addData(data);
+            myFFTView.invalidate();
         }
     }
     @Override
@@ -68,13 +73,13 @@ public class SensorPlot extends Activity implements SensorEventListener, SeekBar
     }
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
-
+        int progress = seekBar.getProgress();
+        sManager.unregisterListener(this,sManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
+        sManager.registerListener(this,sManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),progress*1000);
     }
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        // 0 - 100
-        sManager.unregisterListener(this,sManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
-        sManager.registerListener(this,sManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),progress*1000);
+
     }
 
 }

@@ -24,12 +24,16 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:progress="100" />
-    <View
+    <com.example.stechpalme.sensorexcercise.FFTView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_below="@+id/seekBar"
         android:layout_above="@+id/seekBar2"
-        android:id="@+id/view"></View>
+        android:id="@+id/plot2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
     <SeekBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -37,6 +41,6 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/view"
-        android:layout_alignEnd="@+id/view" />
+        android:layout_alignRight="@+id/plot2"
+        android:layout_alignEnd="@+id/plot2" />
 </RelativeLayout>

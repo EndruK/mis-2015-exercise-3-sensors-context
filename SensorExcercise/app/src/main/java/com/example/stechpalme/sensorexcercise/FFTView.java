@@ -6,12 +6,16 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 
+import java.util.Arrays;
+
 /**
- * Created by andre on 21.05.2015.
+ * Created by andre on 5/22/15.
  */
-public class PlotView extends SensorView {
-    public PlotView(Context context, AttributeSet attr) {
-        super(context,attr);
+public class FFTView extends SensorView {
+    FFT fft;
+    public FFTView(Context context, AttributeSet attr) {
+        super(context, attr);
+        fft = new FFT(sumPlots);
     }
     @Override
     protected void onDraw(Canvas canvas) {
@@ -21,24 +25,28 @@ public class PlotView extends SensorView {
         this.xAxisEnd = this.width - this.padding;
         super.onDraw(canvas);
         if(sensorDatas.size() > sumPlots) {
-            for (int i = 1; i < sumPlots+1; ++i) {
+            double[] x = new double[sumPlots];
+            double[] y = new double[sumPlots];
+            for(int i = 0; i < sumPlots; ++i) {
+                SensorData d1 = this.sensorDatas.get(this.sensorDatas.size() - 1 - i);
+                x[i] = (double) calcMagnitude(d1);
+            }
+            Arrays.fill(y,0.0d);
+
+            fft.fft(x,y);
+
+            /*for (int i = 1; i < sumPlots+1; ++i) {
                 SensorData d1 = this.sensorDatas.get(this.sensorDatas.size() - i);
                 SensorData d2 = this.sensorDatas.get(this.sensorDatas.size() - 1 - i);
-                drawSensorLine(i,d1.getX(),d2.getX(),canvas,Color.RED);
-                drawSensorLine(i,d1.getY(),d2.getY(),canvas,Color.GREEN);
-                drawSensorLine(i,d1.getZ(),d2.getZ(),canvas,Color.BLUE);
                 drawSensorLine(i,calcMagnitude(d1),calcMagnitude(d2),canvas,Color.WHITE);
-            }
+            }*/
         }
-        else if(this.sensorDatas.size() < sumPlots && this.sensorDatas.size() > 2) {
+        /*else if(this.sensorDatas.size() < sumPlots && this.sensorDatas.size() > 2) {
             for(int i = 1; i < this.sensorDatas.size(); ++i) {
                 SensorData d1 = this.sensorDatas.get(this.sensorDatas.size() - i);
                 SensorData d2 = this.sensorDatas.get(this.sensorDatas.size() - 1 - i);
-                drawSensorLine(i,d1.getX(),d2.getX(),canvas,Color.RED);
-                drawSensorLine(i,d1.getY(),d2.getY(),canvas,Color.GREEN);
-                drawSensorLine(i,d1.getZ(),d2.getZ(),canvas,Color.BLUE);
                 drawSensorLine(i,calcMagnitude(d1),calcMagnitude(d2),canvas,Color.WHITE);
             }
-        }
+        }*/
     }
 }

@@ -38,7 +38,7 @@ public class PlotView extends View {
         Paint paint = new Paint();
         paint.setColor(Color.BLACK);
         paint.setStrokeWidth(1.0f);
-        //canvas.drawLine(this.originX,this.originY, this.originX,this.yAxisEnd, paint);
+        //canvas.drawLine(this.padding,this.padding, this.padding,this.height-this.padding, paint);
         canvas.drawLine(this.originX,this.originY, this.xAxisEnd,this.originY, paint);
         if(sensorDatas.size() > 50) {
             for (int i = 1; i < 51; ++i) {
@@ -47,6 +47,7 @@ public class PlotView extends View {
                 drawSensorLine(i,d1.getX(),d2.getX(),canvas,Color.RED);
                 drawSensorLine(i,d1.getY(),d2.getY(),canvas,Color.GREEN);
                 drawSensorLine(i,d1.getZ(),d2.getZ(),canvas,Color.BLUE);
+                drawSensorLine(i,calcMagnitude(d1),calcMagnitude(d2),canvas,Color.WHITE);
             }
         }
         else if(this.sensorDatas.size() < 50 && this.sensorDatas.size() > 2) {
@@ -56,6 +57,7 @@ public class PlotView extends View {
                 drawSensorLine(i,d1.getX(),d2.getX(),canvas,Color.RED);
                 drawSensorLine(i,d1.getY(),d2.getY(),canvas,Color.GREEN);
                 drawSensorLine(i,d1.getZ(),d2.getZ(),canvas,Color.BLUE);
+                drawSensorLine(i,calcMagnitude(d1),calcMagnitude(d2),canvas,Color.WHITE);
             }
         }
     }
@@ -73,6 +75,7 @@ public class PlotView extends View {
 
         Paint p = new Paint();
         p.setColor(color);
+        p.setStrokeWidth(2.0f);
         canvas.drawLine(posX1,posY1,posX2,posY2,p);
     }
 
@@ -81,5 +84,12 @@ public class PlotView extends View {
         if(sensorDatas.size() > 60) {
             sensorDatas.remove(0);
         }
+    }
+    public float calcMagnitude(SensorData d) {
+        double x = (double)d.getX();
+        double y = (double)d.getY();
+        double z = (double)d.getZ();
+        float magnitude = (float)Math.sqrt(Math.pow(x,2)+Math.pow(y,2)+Math.pow(z,2));
+        return magnitude;
     }
 }

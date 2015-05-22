@@ -1,6 +1,7 @@
 package com.example.stechpalme.sensorexcercise;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -8,19 +9,23 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
+import android.widget.SeekBar;
 
-public class SensorPlot extends Activity implements SensorEventListener {
+public class SensorPlot extends Activity implements SensorEventListener, SeekBar.OnSeekBarChangeListener {
     SensorManager sManager;
     PlotView myPlotView;
+    SeekBar mySeekBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sensor_plot);
         myPlotView = (PlotView) findViewById(R.id.plot1);
+        myPlotView.setBackgroundColor(Color.BLACK);
+        mySeekBar = (SeekBar) findViewById(R.id.seekBar);
+        mySeekBar.setOnSeekBarChangeListener(this);
         sManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        sManager.registerListener(this,sManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),SensorManager.SENSOR_DELAY_NORMAL);
+        sManager.registerListener(this,sManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),100000);
     }
 
 
@@ -55,9 +60,21 @@ public class SensorPlot extends Activity implements SensorEventListener {
             SensorData data = new SensorData(event.values[0],event.values[1],event.values[2]);
             this.myPlotView.addData(data);
             myPlotView.invalidate();
-            //System.out.println("x" + event.values[0]);
-            //System.out.println("y" + event.values[1]);
-            //System.out.println("z" + event.values[2]);
         }
     }
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+
+    }
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        // 0 - 100
+        sManager.unregisterListener(this,sManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
+        sManager.registerListener(this,sManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),progress*1000);
+    }
+
 }

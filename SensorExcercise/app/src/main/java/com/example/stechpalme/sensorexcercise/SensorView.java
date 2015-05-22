@@ -31,8 +31,8 @@ public abstract class SensorView extends View {
         float posX1 = (i * ((this.width) / sumPlots));
         float posX2 = ((i + 1) * ((this.width)/sumPlots));
 
-        float posY1 = this.originY - ((height-2*padding)/100)*val1;
-        float posY2 = this.originY - ((height-2*padding)/100)*val2;
+        float posY1 = this.height/2 - ((this.height/2)/100)*val1;
+        float posY2 = this.height/2 - ((this.height/2)/100)*val2;
 
         Paint p = new Paint();
         p.setColor(color);

@@ -21,7 +21,7 @@ public class PlotView extends SensorView {
         this.xAxisEnd = this.width - this.padding;
         super.onDraw(canvas);
         if(sensorDatas.size() > sumPlots) {
-            for (int i = 1; i < sumPlots+1; ++i) {
+            for (int i = 1; i < sumPlots-1; ++i) {
                 SensorData d1 = this.sensorDatas.get(this.sensorDatas.size() - i);
                 SensorData d2 = this.sensorDatas.get(this.sensorDatas.size() - 1 - i);
                 drawSensorLine(i,d1.getX(),d2.getX(),canvas,Color.RED);

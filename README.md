@@ -1,9 +1,9 @@
 # Mobile Information Systems Excercise III
----
+
 ## Group:
 - André Karge (110033)
 - Kevin Lang  (110010)
----
+
 ## Views:
 Upper View:
 - plots the accelerometer data
@@ -13,7 +13,7 @@ Upper View:
 - white = magnitude
 Lower View:
 - plots the FFT of the magnitude in yellow
----
+
 ## SeekBars:
 Upper SeekBar:
 - modify the sample rate (0 - 100.000)

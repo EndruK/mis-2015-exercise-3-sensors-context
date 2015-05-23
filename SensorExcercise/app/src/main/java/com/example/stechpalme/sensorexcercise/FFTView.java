@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.widget.Toast;
 
 import java.util.Arrays;
 
@@ -13,6 +14,8 @@ import java.util.Arrays;
  */
 public class FFTView extends SensorView {
     FFT myfft;
+    double[] x = new double[sumPlots];
+    double[] y = new double[sumPlots];
     public FFTView(Context context, AttributeSet attr) {
         super(context, attr);
         myfft = new FFT(sumPlots);
@@ -25,8 +28,8 @@ public class FFTView extends SensorView {
         this.xAxisEnd = this.width - this.padding;
         super.onDraw(canvas);
         if(sensorDatas.size() > sumPlots) {
-            double[] x = new double[sumPlots];
-            double[] y = new double[sumPlots];
+            x = new double[sumPlots];
+            y = new double[sumPlots];
             for (int i = 0; i < sumPlots; ++i) {
                 SensorData d1 = this.sensorDatas.get(this.sensorDatas.size() - 1 - i);
                 x[i] = (double) calcMagnitude(d1);
@@ -43,6 +46,7 @@ public class FFTView extends SensorView {
                 float r = (float) y[i + 1];
                 drawSensorLine(i, l, r, canvas, Color.YELLOW);
             }
+            showActualActivity();
         }
     }
     @Override
@@ -63,19 +67,25 @@ public class FFTView extends SensorView {
         p.setStrokeWidth(2.0f);
         canvas.drawLine(posX1, posY1, posX2, posY2, p);
     }
-    private double avgMag(double[] mag) {
+    private double getAvgMag() {
         double sum = 0.0d;
         //we have to go over only the half of the values because of the mirrored part of fft
         for(int i=0; i<sumPlots/2; ++i) {
-            sum += mag[i];
+            sum += y[i];
         }
-        return sum /(sumPlots/2);
+        return sum/(sumPlots/2);
     }
-    private double getMaxFreq(double[] y) {
+    private double getMaxFreq() {
         double max = 0;
         for(int i=0; i<sumPlots/2; ++i) {
             if(y[i] > max) max = y[i];
         }
         return max;
+    }
+    public String showActualActivity() {
+        //System.out.println(getAvgMag() + "  -  " + getMaxFreq());
+        // avg < 25  == sitting/lying on couch
+
+        return "";
     }
 }

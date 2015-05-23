@@ -65,10 +65,17 @@ public class FFTView extends SensorView {
     }
     private double avgMag(double[] mag) {
         double sum = 0.0d;
-        //we have to go over only the half of the values
-        for(double val : mag) {
-            sum += val;
+        //we have to go over only the half of the values because of the mirrored part of fft
+        for(int i=0; i<sumPlots/2; ++i) {
+            sum += mag[i];
         }
-        return 0;
+        return sum /(sumPlots/2);
+    }
+    private double getMaxFreq(double[] y) {
+        double max = 0;
+        for(int i=0; i<sumPlots/2; ++i) {
+            if(y[i] > max) max = y[i];
+        }
+        return max;
     }
 }

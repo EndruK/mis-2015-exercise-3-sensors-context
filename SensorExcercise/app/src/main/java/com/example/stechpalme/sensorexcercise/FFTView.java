@@ -46,6 +46,11 @@ public class FFTView extends SensorView {
         }
     }
     @Override
+    public void removeData() {
+        super.removeData();
+        myfft = new FFT(sumPlots);
+    }
+    @Override
     protected void drawSensorLine(int i, float val1, float val2, Canvas canvas, int color) {
         float posX1 = (i * ((this.width) / sumPlots));
         float posX2 = ((i + 1) * ((this.width)/sumPlots));

@@ -17,11 +17,11 @@ public abstract class SensorView extends View {
     float padding = 50.0f;
     float originY;
     float xAxisEnd;
-    int sumPlots = 64;
+    public int sumPlots = 64;
     ArrayList<SensorData> sensorDatas;
     public SensorView(Context context, AttributeSet attr) {
         super(context,attr);
-        sensorDatas = new ArrayList<>();
+        sensorDatas = new ArrayList<>(sumPlots);
     }
     protected void drawSensorLine(int i, float val1, float val2, Canvas canvas, int color) {
         /*
@@ -52,8 +52,9 @@ public abstract class SensorView extends View {
         float magnitude = (float)Math.sqrt(Math.pow(x,2)+Math.pow(y,2)+Math.pow(z,2));
         return magnitude;
     }
-    public ArrayList<SensorData> getData() {
-        return sensorDatas;
+    public void removeData() {
+        sensorDatas.clear();
+        sensorDatas = new ArrayList<>(sumPlots);
     }
     @Override
     protected void onDraw(Canvas canvas) {

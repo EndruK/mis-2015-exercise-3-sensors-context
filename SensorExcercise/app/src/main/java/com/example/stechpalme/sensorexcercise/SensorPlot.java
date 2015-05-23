@@ -16,6 +16,7 @@ public class SensorPlot extends Activity implements SensorEventListener, SeekBar
     PlotView myPlotView;
     FFTView myFFTView;
     SeekBar mySeekBar;
+    SeekBar fftSeekBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +28,8 @@ public class SensorPlot extends Activity implements SensorEventListener, SeekBar
         myFFTView.setBackgroundColor(Color.BLACK);
         mySeekBar = (SeekBar) findViewById(R.id.seekBar);
         mySeekBar.setOnSeekBarChangeListener(this);
+        fftSeekBar = (SeekBar) findViewById(R.id.seekBar2);
+        fftSeekBar.setOnSeekBarChangeListener(this);
         sManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         sManager.registerListener(this,sManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),100000);
     }
@@ -73,9 +76,20 @@ public class SensorPlot extends Activity implements SensorEventListener, SeekBar
     }
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
-        int progress = seekBar.getProgress();
-        sManager.unregisterListener(this,sManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
-        sManager.registerListener(this,sManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),progress*1000);
+        if(seekBar.getId() == mySeekBar.getId()) {
+            int progress = seekBar.getProgress();
+            sManager.unregisterListener(this, sManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
+            sManager.registerListener(this, sManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), progress * 1000);
+        }
+        else if(seekBar.getId() == fftSeekBar.getId()) {
+            int progress = (int)(seekBar.getProgress()/10);
+            myPlotView.sumPlots = (int)Math.pow(2,progress+2);
+            myFFTView.sumPlots = (int)Math.pow(2,progress+2);
+            myPlotView.removeData();
+            myFFTView.removeData();
+            myPlotView.invalidate();
+            myFFTView.invalidate();
+        }
     }
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {

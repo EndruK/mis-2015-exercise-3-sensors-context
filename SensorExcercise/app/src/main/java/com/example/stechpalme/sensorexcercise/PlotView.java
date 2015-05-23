@@ -3,7 +3,6 @@ package com.example.stechpalme.sensorexcercise;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.util.AttributeSet;
 
 /**

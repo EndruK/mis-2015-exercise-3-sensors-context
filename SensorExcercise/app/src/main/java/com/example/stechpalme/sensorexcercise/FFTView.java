@@ -35,10 +35,10 @@ public class FFTView extends SensorView {
 
             myfft.fft(x, y);
 
-            for (int i = 0; i < sumPlots; ++i) {
+            for (int i = 0; i < sumPlots/2; ++i) {
                 y[i] = Math.sqrt(Math.pow(x[i], 2) + Math.pow(y[i], 2));
             }
-            for (int i = 1; i < sumPlots - 1; ++i) {
+            for (int i = 1; i < (sumPlots/2) - 1; ++i) {
                 float l = (float) y[i];
                 float r = (float) y[i + 1];
                 drawSensorLine(i, l, r, canvas, Color.YELLOW);
@@ -52,8 +52,8 @@ public class FFTView extends SensorView {
     }
     @Override
     protected void drawSensorLine(int i, float val1, float val2, Canvas canvas, int color) {
-        float posX1 = (i * ((this.width) / sumPlots));
-        float posX2 = ((i + 1) * ((this.width)/sumPlots));
+        float posX1 = (i * (this.width / (sumPlots/2)));
+        float posX2 = ((i + 1) * (this.width/(sumPlots/2)));
 
         float posY1 = this.height - (height/100)*val1;
         float posY2 = this.height - (height/100)*val2;
@@ -62,5 +62,13 @@ public class FFTView extends SensorView {
         p.setColor(color);
         p.setStrokeWidth(2.0f);
         canvas.drawLine(posX1, posY1, posX2, posY2, p);
+    }
+    private double avgMag(double[] mag) {
+        double sum = 0.0d;
+        //we have to go over only the half of the values
+        for(double val : mag) {
+            sum += val;
+        }
+        return 0;
     }
 }

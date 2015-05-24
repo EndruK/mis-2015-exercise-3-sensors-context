@@ -1,12 +1,18 @@
 package com.example.stechpalme.sensorexcercise;
 
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.SeekBar;
@@ -19,6 +25,10 @@ public class SensorPlot extends Activity implements SensorEventListener, SeekBar
     SeekBar mySeekBar;
     SeekBar fftSeekBar;
     TextView myTextView;
+    NotificationCompat.Builder myBuilder;
+    NotificationManager myNotificationManager;
+    String movementAction = "";
+    int mID = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +43,22 @@ public class SensorPlot extends Activity implements SensorEventListener, SeekBar
         fftSeekBar = (SeekBar) findViewById(R.id.seekBar2);
         fftSeekBar.setOnSeekBarChangeListener(this);
         myTextView = (TextView) findViewById(R.id.textview1);
+        myBuilder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_stat_maps_directions_walk)
+                .setContentTitle("Sensor Excercise")
+                .setContentText("test");
+        Intent myIntent = new Intent(this,SensorPlot.class);
+
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addParentStack(SensorPlot.class);
+        stackBuilder.addNextIntent(myIntent);
+        PendingIntent myPendingIntent
+                = stackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
+        myBuilder.setContentIntent(myPendingIntent);
+        myNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        myNotificationManager.notify(mID,myBuilder.build());
+
+
         sManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         sManager.registerListener(this,sManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),100000);
     }
@@ -71,7 +97,16 @@ public class SensorPlot extends Activity implements SensorEventListener, SeekBar
             myPlotView.invalidate();
             this.myFFTView.addData(data);
             myFFTView.invalidate();
-            String test = myFFTView.showActualActivity(myTextView);
+            if(!movementAction.equals(myFFTView.showActualActivity(myTextView))
+                    && !myFFTView.showActualActivity(myTextView).equals("")) {
+                movementAction = myFFTView.showActualActivity(myTextView);
+                myNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                myBuilder = new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.ic_stat_maps_directions_walk)
+                        .setContentTitle("Sensor Excercise")
+                        .setContentText(movementAction);
+                myNotificationManager.notify(mID, myBuilder.build());
+            }
         }
     }
     @Override

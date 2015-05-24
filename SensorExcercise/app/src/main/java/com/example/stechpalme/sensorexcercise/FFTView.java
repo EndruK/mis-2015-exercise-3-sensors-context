@@ -103,12 +103,15 @@ public class FFTView extends SensorView {
             double avg = getAvgMag();
             double max = getMaxFreq();
             if(avg < 25) { //user is in chillmode
+                input.setText(avg + " - " + max + " - chilling");
                 return "you are in chillmode - keep relaxing";
             }
             else if(avg >= 25 && avg <= 31) { //user is walking
+                input.setText(avg + " - " + max + " - walking");
                 return "you're walking - easy";
             }
             else { //user is running
+                input.setText(avg + " - " + max + " - running");
                 return "you're running - calm down and relax";
             }
         }

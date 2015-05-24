@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 public class SensorPlot extends Activity implements SensorEventListener, SeekBar.OnSeekBarChangeListener {
     SensorManager sManager;
@@ -17,6 +18,7 @@ public class SensorPlot extends Activity implements SensorEventListener, SeekBar
     FFTView myFFTView;
     SeekBar mySeekBar;
     SeekBar fftSeekBar;
+    TextView myTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +32,7 @@ public class SensorPlot extends Activity implements SensorEventListener, SeekBar
         mySeekBar.setOnSeekBarChangeListener(this);
         fftSeekBar = (SeekBar) findViewById(R.id.seekBar2);
         fftSeekBar.setOnSeekBarChangeListener(this);
+        myTextView = (TextView) findViewById(R.id.textview1);
         sManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         sManager.registerListener(this,sManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),100000);
     }
@@ -68,6 +71,7 @@ public class SensorPlot extends Activity implements SensorEventListener, SeekBar
             myPlotView.invalidate();
             this.myFFTView.addData(data);
             myFFTView.invalidate();
+            String test = myFFTView.showActualActivity(myTextView);
         }
     }
     @Override

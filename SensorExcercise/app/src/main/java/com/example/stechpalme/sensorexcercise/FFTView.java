@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Arrays;
@@ -46,7 +47,7 @@ public class FFTView extends SensorView {
                 float r = (float) y[i + 1];
                 drawSensorLine(i, l, r, canvas, Color.YELLOW);
             }
-            showActualActivity();
+            //showActualActivity();
         }
     }
     @Override
@@ -73,19 +74,33 @@ public class FFTView extends SensorView {
         for(int i=0; i<sumPlots/2; ++i) {
             sum += y[i];
         }
-        return sum/(sumPlots/2);
+        return Math.round((sum/(sumPlots/2))*1000)/1000.0;
     }
     private double getMaxFreq() {
         double max = 0;
         for(int i=0; i<sumPlots/2; ++i) {
             if(y[i] > max) max = y[i];
         }
-        return max;
+        return Math.round(max*1000)/1000.0;
     }
-    public String showActualActivity() {
-        //System.out.println(getAvgMag() + "  -  " + getMaxFreq());
-        // avg < 25  == sitting/lying on couch
+    public String showActualActivity(TextView input) {
+        // chillmode:
+        // avg < 25
+        // max < 660
 
+        //running:
+        //avg ?
+        //max ?
+
+        //walking:
+        //avg ?
+        //max ?
+        if(sensorDatas.size() > sumPlots) {
+
+            input.setText(getAvgMag()
+                    + "  -  "
+                    + getMaxFreq());
+        }
         return "";
     }
 }

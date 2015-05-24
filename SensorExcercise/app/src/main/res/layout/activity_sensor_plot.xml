@@ -13,7 +13,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_above="@+id/seekBar" />
+        android:layout_above="@+id/seekBar"
+        android:layout_below="@+id/textview1" />
     <SeekBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -44,4 +45,14 @@
         android:layout_alignRight="@+id/plot2"
         android:layout_alignEnd="@+id/plot2"
         android:progress="4"/>
+    <TextView
+        android:id="@+id/textview1"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_alignRight="@+id/plot1"
+        android:layout_alignEnd="@+id/plot1"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:text="test"/>
 </RelativeLayout>

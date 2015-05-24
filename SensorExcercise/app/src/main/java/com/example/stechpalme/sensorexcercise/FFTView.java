@@ -86,20 +86,31 @@ public class FFTView extends SensorView {
     public String showActualActivity(TextView input) {
         // chillmode:
         // avg < 25
-        // max < 660
+        // max < 640~ not very accurate
 
         //running:
-        //avg ?
-        //max ?
+        //avg > 25 < 30
+        //max 650~ not very accurate
 
         //walking:
-        //avg ?
-        //max ?
+        //avg > 30
+        //max 690 - 710
         if(sensorDatas.size() > sumPlots) {
 
             input.setText(getAvgMag()
                     + "  -  "
                     + getMaxFreq());
+            double avg = getAvgMag();
+            double max = getMaxFreq();
+            if(avg < 25) { //user is in chillmode
+                return "you are in chillmode - keep relaxing";
+            }
+            else if(avg >= 25 && avg <= 31) { //user is walking
+                return "you're walking - easy";
+            }
+            else { //user is running
+                return "you're running - calm down and relax";
+            }
         }
         return "";
     }

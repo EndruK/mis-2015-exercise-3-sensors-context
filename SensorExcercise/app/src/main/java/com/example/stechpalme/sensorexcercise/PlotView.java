@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 
 /**
  * Created by andre on 21.05.2015.
+ * A class to draw only the accelerometer data and magnitude
  */
 public class PlotView extends SensorView {
     public PlotView(Context context, AttributeSet attr) {

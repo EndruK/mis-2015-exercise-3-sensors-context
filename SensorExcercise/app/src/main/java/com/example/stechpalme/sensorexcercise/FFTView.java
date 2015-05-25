@@ -6,12 +6,12 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.Arrays;
 
 /**
  * Created by andre on 5/22/15.
+ * A Class to draw the result of the FFT and to handle the 3 activities
  */
 public class FFTView extends SensorView {
     FFT myfft;
@@ -28,28 +28,33 @@ public class FFTView extends SensorView {
         this.originY = (this.height - this.padding) - height/2;
         this.xAxisEnd = this.width - this.padding;
         super.onDraw(canvas);
+        //wait for the array to be filled
         if(sensorDatas.size() > sumPlots) {
             x = new double[sumPlots];
             y = new double[sumPlots];
+            //calc the magnitude of the sensor data
             for (int i = 0; i < sumPlots; ++i) {
                 SensorData d1 = this.sensorDatas.get(this.sensorDatas.size() - 1 - i);
                 x[i] = (double) calcMagnitude(d1);
             }
             Arrays.fill(y, 0.0d);
-
+            //do the fft
             myfft.fft(x, y);
-
+            //calc the magnitude of the resulting real and imaginary parts
+            //since we have both parts real and imaginary in the result the plot is mirrored in the middle
+            //so it is necessary to cut the result in the middle and go on with only the half
             for (int i = 0; i < sumPlots/2; ++i) {
                 y[i] = Math.sqrt(Math.pow(x[i], 2) + Math.pow(y[i], 2));
             }
+            //draw the lines
             for (int i = 1; i < (sumPlots/2) - 1; ++i) {
                 float l = (float) y[i];
                 float r = (float) y[i + 1];
                 drawSensorLine(i, l, r, canvas, Color.YELLOW);
             }
-            //showActualActivity();
         }
     }
+    //clear all data
     @Override
     public void removeData() {
         super.removeData();
@@ -68,7 +73,8 @@ public class FFTView extends SensorView {
         p.setStrokeWidth(2.0f);
         canvas.drawLine(posX1, posY1, posX2, posY2, p);
     }
-    private double getAvgMag() {
+    //get the average frequency
+    private double getAvgFreq() {
         double sum = 0.0d;
         //we have to go over only the half of the values because of the mirrored part of fft
         for(int i=0; i<sumPlots/2; ++i) {
@@ -76,6 +82,7 @@ public class FFTView extends SensorView {
         }
         return Math.round((sum/(sumPlots/2))*1000)/1000.0;
     }
+    //get the max frequency
     private double getMaxFreq() {
         double max = 0;
         for(int i=0; i<sumPlots/2; ++i) {
@@ -97,10 +104,10 @@ public class FFTView extends SensorView {
         //max 690 - 710
         if(sensorDatas.size() > sumPlots) {
 
-            input.setText(getAvgMag()
+            input.setText(getAvgFreq()
                     + "  -  "
                     + getMaxFreq());
-            double avg = getAvgMag();
+            double avg = getAvgFreq();
             double max = getMaxFreq();
             if(avg < 25) { //user is in chillmode
                 input.setText(avg + " - " + max + " - chilling");

@@ -34,6 +34,7 @@ public class SensorPlot extends Activity implements SensorEventListener, SeekBar
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sensor_plot);
+        //initialize everything
         myPlotView = (PlotView) findViewById(R.id.plot1);
         myPlotView.setBackgroundColor(Color.BLACK);
         myFFTView = (FFTView) findViewById(R.id.plot2);
@@ -43,6 +44,8 @@ public class SensorPlot extends Activity implements SensorEventListener, SeekBar
         fftSeekBar = (SeekBar) findViewById(R.id.seekBar2);
         fftSeekBar.setOnSeekBarChangeListener(this);
         myTextView = (TextView) findViewById(R.id.textview1);
+
+        //notification stuff
         myBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_stat_maps_directions_walk)
                 .setContentTitle("Sensor Excercise")
@@ -58,7 +61,7 @@ public class SensorPlot extends Activity implements SensorEventListener, SeekBar
         myNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         myNotificationManager.notify(mID,myBuilder.build());
 
-
+        //sensor stuff
         sManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         sManager.registerListener(this,sManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),100000);
     }
@@ -91,12 +94,14 @@ public class SensorPlot extends Activity implements SensorEventListener, SeekBar
     }
     @Override
     public void onSensorChanged(SensorEvent event) {
+        //we only want the accelerometer data
         if(event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             SensorData data = new SensorData(event.values[0],event.values[1],event.values[2]);
-            this.myPlotView.addData(data);
-            myPlotView.invalidate();
-            this.myFFTView.addData(data);
-            myFFTView.invalidate();
+            this.myPlotView.addData(data); //add values to Plot View
+            myPlotView.invalidate(); //redraw
+            this.myFFTView.addData(data); //add values to FFT View
+            myFFTView.invalidate(); //redraw
+            //change the notification based on the results of the fft
             if(!movementAction.equals(myFFTView.showActualActivity(myTextView))
                     && !myFFTView.showActualActivity(myTextView).equals("")) {
                 movementAction = myFFTView.showActualActivity(myTextView);
@@ -115,13 +120,17 @@ public class SensorPlot extends Activity implements SensorEventListener, SeekBar
     }
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
+        //upper seekbar
         if(seekBar.getId() == mySeekBar.getId()) {
             int progress = seekBar.getProgress();
+            //just re-register the listener with a different sampling rate
             sManager.unregisterListener(this, sManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
             sManager.registerListener(this, sManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), progress * 1000);
         }
+        //lower seekbar
         else if(seekBar.getId() == fftSeekBar.getId()) {
-            int progress = (int)(seekBar.getProgress()/10);
+            int progress = (int)Math.round(seekBar.getProgress()/15);
+            //change the array size
             myPlotView.sumPlots = (int)Math.pow(2,progress+2);
             myFFTView.sumPlots = (int)Math.pow(2,progress+2);
             myPlotView.removeData();

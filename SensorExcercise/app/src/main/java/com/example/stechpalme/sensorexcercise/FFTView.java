@@ -58,6 +58,8 @@ public class FFTView extends SensorView {
     @Override
     public void removeData() {
         super.removeData();
+        x = new double[sumPlots];
+        y = new double[sumPlots];
         myfft = new FFT(sumPlots);
     }
     @Override

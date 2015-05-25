@@ -125,6 +125,10 @@ public class SensorPlot extends Activity implements SensorEventListener, SeekBar
             int progress = seekBar.getProgress();
             //just re-register the listener with a different sampling rate
             sManager.unregisterListener(this, sManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
+            myPlotView.removeData();
+            myPlotView.invalidate();
+            myFFTView.removeData();
+            myFFTView.invalidate();
             sManager.registerListener(this, sManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), progress * 1000);
         }
         //lower seekbar
